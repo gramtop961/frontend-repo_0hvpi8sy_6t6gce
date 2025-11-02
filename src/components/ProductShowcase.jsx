@@ -1,113 +1,74 @@
-import React, { useMemo } from 'react';
-import { ShoppingCart, Star, Package, Wrench } from 'lucide-react';
+import React, { useMemo, useState } from 'react';
+import { Star } from 'lucide-react';
 
-const products = [
-  {
-    id: 'dev-1',
-    type: 'device',
-    name: 'Autonomous Rover v2',
-    price: 1299,
-    rating: 4.8,
-    description: 'Ready-to-run mobile robot with lidar, Wi‑Fi, and app control.',
-    image:
-      'https://images.unsplash.com/photo-1581094794329-c8112a89af12?q=80&w=1200&auto=format&fit=crop',
-  },
-  {
-    id: 'dev-2',
-    type: 'device',
-    name: 'Smart Greenhouse Kit Pro',
-    price: 899,
-    rating: 4.7,
-    description: 'Automated climate control with sensors, pumps, and cloud app.',
-    image:
-      'https://images.unsplash.com/photo-1509395176047-4a66953fd231?q=80&w=1200&auto=format&fit=crop',
-  },
-  {
-    id: 'kit-1',
-    type: 'kit',
-    name: 'IoT Starter Kit',
-    price: 149,
-    rating: 4.6,
-    description: 'ESP32, sensors, and guides—perfect for DIY projects.',
-    image:
-      'https://images.unsplash.com/photo-1518779578993-ec3579fee39f?q=80&w=1200&auto=format&fit=crop',
-  },
-  {
-    id: 'kit-2',
-    type: 'kit',
-    name: 'Robotic Arm DIY',
-    price: 329,
-    rating: 4.5,
-    description: 'Assemble a 5‑axis arm with smart servos and control app.',
-    image:
-      'https://images.unsplash.com/photo-1581092921461-eab62e97a780?q=80&w=1200&auto=format&fit=crop',
-  },
+const productsSeed = [
+  { id: 'd1', type: 'device', name: 'Smart Air Monitor', price: 129.0, rating: 4.7, img: 'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?q=80&w=1200&auto=format&fit=crop' },
+  { id: 'd2', type: 'device', name: 'Home Energy Hub', price: 199.0, rating: 4.6, img: 'https://images.unsplash.com/photo-1518779578993-ec3579fee39f?q=80&w=1200&auto=format&fit=crop' },
+  { id: 'k1', type: 'kit', name: 'IoT Starter Kit', price: 69.0, rating: 4.5, img: 'https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=1200&auto=format&fit=crop' },
+  { id: 'k2', type: 'kit', name: 'Robotics Arm Kit', price: 149.0, rating: 4.8, img: 'https://images.unsplash.com/photo-1555617981-dac3880eac6e?q=80&w=1200&auto=format&fit=crop' },
 ];
 
-const tabs = [
-  { key: 'device', label: 'Full Devices', icon: Package },
-  { key: 'kit', label: 'DIY Kits', icon: Wrench },
-];
-
-const ProductCard = ({ item, onAdd }) => {
-  return (
-    <div className="group relative overflow-hidden rounded-xl border border-white/10 bg-white/5 backdrop-blur">
-      <img src={item.image} alt={item.name} className="h-44 w-full object-cover transition duration-300 group-hover:scale-105" />
-      <div className="space-y-2 p-4">
-        <div className="flex items-start justify-between gap-4">
-          <h3 className="text-lg font-semibold text-white">{item.name}</h3>
-          <span className="rounded-md bg-orange-500/20 px-2 py-1 text-sm font-medium text-orange-300">
-            ${item.price}
-          </span>
-        </div>
-        <p className="text-sm text-white/70">{item.description}</p>
-        <div className="flex items-center justify-between pt-2">
-          <div className="flex items-center gap-1 text-yellow-300">
-            <Star size={16} fill="currentColor" />
-            <span className="text-sm text-white/80">{item.rating}</span>
-          </div>
-          <button
-            onClick={() => onAdd(item)}
-            className="inline-flex items-center gap-2 rounded-lg bg-orange-500 px-3 py-2 text-sm font-medium text-black hover:bg-orange-400 transition"
-          >
-            <ShoppingCart size={16} /> Add to cart
-          </button>
-        </div>
+const ProductCard = ({ p, onAdd }) => (
+  <div className="group overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-sm transition hover:shadow-lg">
+    <div className="relative">
+      <img src={p.img} alt={p.name} className="h-48 w-full object-cover" />
+      <div className="absolute right-3 top-3 rounded-full bg-white/90 px-2 py-1 text-xs font-medium shadow">
+        {p.type === 'device' ? 'Device' : 'DIY Kit'}
       </div>
     </div>
-  );
-};
+    <div className="space-y-3 p-4">
+      <h3 className="text-base font-semibold text-zinc-900">{p.name}</h3>
+      <div className="flex items-center gap-1 text-amber-500">
+        <Star className="h-4 w-4 fill-current" />
+        <span className="text-sm text-zinc-700">{p.rating}</span>
+      </div>
+      <div className="flex items-center justify-between">
+        <span className="text-lg font-semibold">${p.price.toFixed(2)}</span>
+        <button onClick={() => onAdd(p)} className="rounded-xl bg-zinc-900 px-4 py-2 text-sm font-medium text-white hover:bg-zinc-800">
+          Add to cart
+        </button>
+      </div>
+    </div>
+  </div>
+);
 
-const ProductShowcase = ({ activeTab, onChangeTab, onAddToCart }) => {
-  const filtered = useMemo(
-    () => products.filter((p) => p.type === activeTab),
-    [activeTab]
-  );
+const Tabs = ({ tab, setTab }) => (
+  <div className="inline-flex rounded-xl border border-zinc-200 bg-zinc-50 p-1 text-sm">
+    <button
+      onClick={() => setTab('device')}
+      className={`rounded-lg px-3 py-1.5 ${tab === 'device' ? 'bg-white shadow font-medium' : 'text-zinc-600'}`}
+    >
+      Full Devices
+    </button>
+    <button
+      onClick={() => setTab('kit')}
+      className={`rounded-lg px-3 py-1.5 ${tab === 'kit' ? 'bg-white shadow font-medium' : 'text-zinc-600'}`}
+    >
+      DIY Kits
+    </button>
+  </div>
+);
+
+const ProductShowcase = ({ onAddToCart, devicesRef, kitsRef }) => {
+  const [tab, setTab] = useState('device');
+  const list = useMemo(() => productsSeed.filter(p => p.type === tab), [tab]);
 
   return (
-    <section id="products" className="mx-auto max-w-6xl px-6 py-12">
-      <div className="mb-6 flex items-center justify-between">
-        <h2 className="text-2xl font-semibold text-white">Shop</h2>
-        <div className="flex items-center gap-2 rounded-lg bg-white/5 p-1">
-          {tabs.map(({ key, label, icon: Icon }) => (
-            <button
-              key={key}
-              onClick={() => onChangeTab(key)}
-              className={`inline-flex items-center gap-2 rounded-md px-4 py-2 text-sm transition ${
-                activeTab === key ? 'bg-orange-500 text-black' : 'text-white/80 hover:bg-white/10'
-              }`}
-            >
-              <Icon size={16} /> {label}
-            </button>
-          ))}
-        </div>
+    <section className="mx-auto max-w-6xl space-y-6 px-4" id="shop">
+      <div className="flex items-center justify-between">
+        <h2 className="text-2xl font-semibold">Shop</h2>
+        <Tabs tab={tab} setTab={setTab} />
       </div>
 
-      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-        {filtered.map((item) => (
-          <ProductCard key={item.id} item={item} onAdd={onAddToCart} />
+      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        {list.map(p => (
+          <ProductCard key={p.id} p={p} onAdd={onAddToCart} />
         ))}
       </div>
+
+      {/* Anchors for hero buttons */}
+      <div ref={devicesRef} />
+      <div ref={kitsRef} />
     </section>
   );
 };
