@@ -1,4 +1,4 @@
-import React, { useMemo, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import HeroSpline from './components/HeroSpline';
 import ProductShowcase from './components/ProductShowcase';
 import ServiceContact from './components/ServiceContact';
@@ -8,8 +8,19 @@ import { ShoppingCart, Mail } from 'lucide-react';
 export default function App() {
   const [cart, setCart] = useState([]);
   const [openCheckout, setOpenCheckout] = useState(false);
+  const [cookiesOk, setCookiesOk] = useState(false);
   const devicesRef = useRef(null);
   const kitsRef = useRef(null);
+
+  useEffect(() => {
+    const ok = localStorage.getItem('cookies-ok') === 'true';
+    setCookiesOk(ok);
+  }, []);
+
+  const acceptCookies = () => {
+    localStorage.setItem('cookies-ok', 'true');
+    setCookiesOk(true);
+  };
 
   const subtotal = useMemo(() => cart.reduce((s, i) => s + i.price, 0), [cart]);
 
@@ -44,13 +55,41 @@ export default function App() {
 
       <main className="mx-auto mt-4 max-w-6xl space-y-12 px-4 pb-16">
         <HeroSpline onShopDevices={onShopDevices} onShopKits={onShopKits} onContact={onContact} />
-        <ProductShowcase onAddToCart={onAddToCart} devicesRef={devicesRef} kitsRef={kitsRef} />
+        <section id="shop">
+          <ProductShowcase onAddToCart={onAddToCart} devicesRef={devicesRef} kitsRef={kitsRef} />
+        </section>
         <div id="contact">
           <ServiceContact />
         </div>
       </main>
 
       <CheckoutModal open={openCheckout} onClose={() => setOpenCheckout(false)} cart={cart} />
+
+      {!cookiesOk && (
+        <div className="fixed inset-x-0 bottom-0 z-50 mx-auto max-w-3xl p-4">
+          <div className="rounded-2xl border border-zinc-200 bg-white p-4 shadow-lg">
+            <div className="flex flex-col items-start gap-3 sm:flex-row sm:items-center sm:justify-between">
+              <p className="text-sm text-zinc-700">
+                We use cookies to personalize content, remember your preferences, and analyze traffic.
+              </p>
+              <div className="flex gap-2">
+                <button
+                  onClick={acceptCookies}
+                  className="rounded-xl bg-zinc-900 px-4 py-2 text-sm text-white hover:bg-zinc-800"
+                >
+                  Accept
+                </button>
+                <button
+                  onClick={() => setCookiesOk(true)}
+                  className="rounded-xl border border-zinc-200 bg-white px-4 py-2 text-sm hover:bg-zinc-50"
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

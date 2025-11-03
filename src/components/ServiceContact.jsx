@@ -1,11 +1,17 @@
 import React from 'react';
 import { Phone, Mail } from 'lucide-react';
 
-const ServiceContact = ({ whatsappNumber = '+628953398492', supportEmail = 'yuanalbyan13@gmail.com' }) => {
-  const waLink = (msg) => `https://wa.me/${whatsappNumber.replace(/[^\d]/g, '')}?text=${encodeURIComponent(msg)}`;
+function normalizeIndo(number) {
+  const digits = String(number).replace(/[^\d]/g, '');
+  if (digits.startsWith('0')) return `62${digits.slice(1)}`;
+  return digits;
+}
+
+const ServiceContact = ({ whatsappNumber = '08953398492', supportEmail = 'yuanalbyan13@gmail.com' }) => {
+  const waLink = (msg) => `https://wa.me/${normalizeIndo(whatsappNumber)}?text=${encodeURIComponent(msg)}`;
   const defaultMsg = 'Hello! I would like to inquire about a custom service or DANA payment link.';
 
-  const emailHref = `mailto:${supportEmail}?subject=${encodeURIComponent('Support / Order Inquiry')}&body=${encodeURIComponent('Hello, I would like to ask about my order or request a DANA payment link.')} `;
+  const emailHref = `mailto:${supportEmail}?subject=${encodeURIComponent('Support / Order Inquiry')}&body=${encodeURIComponent('Hello, I would like to ask about my order or request a DANA payment link.')}`;
 
   return (
     <section className="mx-auto max-w-6xl rounded-2xl border border-zinc-200 bg-white px-4 py-8 shadow-sm">

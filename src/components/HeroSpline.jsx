@@ -6,7 +6,7 @@ const HeroSpline = ({ onShopDevices, onShopKits, onContact }) => {
   return (
     <section className="relative h-[70vh] w-full overflow-hidden rounded-2xl bg-black text-white">
       <Spline
-        scene="https://prod.spline.design/0b7aQ0s6T1rG-gCh/scene.splinecode"
+        scene="https://prod.spline.design/AeAqaKLmGsS-FPBN/scene.splinecode"
         style={{ width: '100%', height: '100%' }}
       />
 

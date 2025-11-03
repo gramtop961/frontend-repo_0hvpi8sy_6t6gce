@@ -26,6 +26,12 @@ const Field = ({ label, type = 'text', value, onChange, placeholder }) => (
   </label>
 );
 
+function normalizeIndo(number) {
+  const digits = String(number).replace(/[^\d]/g, '');
+  if (digits.startsWith('0')) return `62${digits.slice(1)}`;
+  return digits;
+}
+
 const CheckoutModal = ({ open, onClose, cart }) => {
   const subtotal = useMemo(() => cart.reduce((s, i) => s + i.price, 0), [cart]);
   const [tab, setTab] = useState('paypal');
@@ -85,7 +91,7 @@ const CheckoutModal = ({ open, onClose, cart }) => {
   };
 
   const mailtoHref = `mailto:yuanalbyan13@gmail.com?subject=${encodeURIComponent('DANA Payment Link Request')}&body=${encodeURIComponent(orderSummaryText())}`;
-  const whatsappHref = `https://wa.me/628953398492?text=${encodeURIComponent('Hi, I would like to pay with DANA.\n' + orderSummaryText())}`;
+  const whatsappHref = `https://wa.me/${normalizeIndo('08953398492')}?text=${encodeURIComponent('Hi, I would like to pay with DANA.\n' + orderSummaryText())}`;
 
   if (!open) return null;
 
